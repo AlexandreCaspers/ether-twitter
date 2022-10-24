@@ -1,0 +1,22 @@
+{
+  "name": "ether-twitter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.sol",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexandreCaspers/ether-twitter.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexandreCaspers/ether-twitter/issues"
+  },
+  "homepage": "https://github.com/AlexandreCaspers/ether-twitter#readme"
+}
