@@ -1,9 +1,10 @@
 import {ChakraProvider} from '@chakra-ui/react'
+import Feed from './pages/mainpage/Feed';
 
 function App() {
   return (
     <ChakraProvider>
-      <div></div>
+      <Feed></Feed>
     </ChakraProvider>
     
   );

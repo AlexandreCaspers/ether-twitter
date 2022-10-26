@@ -10,7 +10,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   padding: 0; 
 box-sizing: border-box; 
-background-color: #1DA1F2; //copying twitter's original color
+
 }
 
 code {
