@@ -1,13 +1,11 @@
 {
   "name": "ether-twitter",
   "version": "1.0.0",
-  "description": "",
-  "main": "src/main.sol",
-  "directories": {
-    "test": "test"
-  },
+  "description": "Group Members: Alexandre Caspers, Grace Jiyoung Yun, Erlei Lin, Martin Hugo De Barros Sejas",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx hardhat test",
+    "deploy": "npx hardhat run scripts/deploy.js"
   },
   "repository": {
     "type": "git",
@@ -18,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/AlexandreCaspers/ether-twitter/issues"
   },
-  "homepage": "https://github.com/AlexandreCaspers/ether-twitter#readme"
+  "homepage": "https://github.com/AlexandreCaspers/ether-twitter#readme",
+  "devDependencies": {
+    "hardhat": "^2.12.0"
+  }
 }
