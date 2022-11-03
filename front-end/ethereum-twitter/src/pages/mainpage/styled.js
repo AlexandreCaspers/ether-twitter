@@ -61,7 +61,7 @@ Button{
     margin-left: 5px; 
     color: white;
     background-color: #57baf7; 
-    border: 1px solid #0c5989;
+    border: 1px solid white;
      
 
 }
