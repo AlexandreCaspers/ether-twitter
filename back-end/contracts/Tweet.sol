@@ -21,6 +21,18 @@ contract Tweet {
 
     TweetStruct[] public tweets;
     //mapping (uint => address) public tweetToOwner;
+    function GetTweetMessage(uint id) public view returns(string memory) {
+        return tweets[id].TweetMessage;
+    }
+    function GetTweetOwner(uint id) public view returns(address) {
+        return tweets[id].TweetOwner;
+    }
+    function GetTweetTime(uint id) public view returns(uint) {
+        return tweets[id].TweetTime;
+    }
+    function GetTweetVisibility(uint id) public view returns(bool) {
+        return tweets[id].visibility;
+    }
 
     function PostTweet(string memory message) public {
         require(keccak256(abi.encodePacked(message)) != keccak256(abi.encodePacked("")));

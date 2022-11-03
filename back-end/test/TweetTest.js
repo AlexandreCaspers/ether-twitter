@@ -30,11 +30,13 @@ describe("Token contract", function () {
     
     it("Should create tweet", async function() {
         const { hardhatTweet, owner } = await loadFixture(deployTweetFixture);
-        await hardhatTweet.PostTweet("My First Tweet!");
-        expect(await hardhatTweet.tweets[0].TweetMessage).to.equal("My First Tweet!");
-        expect(await hardhatTweet.tweets[0].TweetOwner).to.equal(owner);
-        expect(await hardhatTweet.tweets[0].TweetTime).to.equal(now);
-        expect(await hardhatTweet.tweets[0].visibility).to.equal(true);
+        let myTweet = hardhatTweet.PostTweet("My First Tweet!");
+        myTweet.then( async () => {
+            expect(await hardhatTweet.GetTweetMessage(0)).to.equal("My First Tweet!");
+            expect(await hardhatTweet.GetTweetOwner(0)).to.equal(owner.address);
+            //expect(await hardhatTweet.GetTweetTime(0)).to.equal(new Date().getTime() / 1000);
+            expect(await hardhatTweet.GetTweetVisibility(0)).to.equal(true);
+        }).catch((err) => console.log(err))
     });
 /*
     it("Should link tweet to correct owner", async function() {
@@ -43,7 +45,7 @@ describe("Token contract", function () {
         await hardhatTweet.PostTweet("My First Tweet!");
         expect(await tweetToOwner[0].to.equal(owner));
     });
-    */
+*/
 
     it("Should emit NewTweet events", async function () {
         const { hardhatTweet, owner, addr1 } = await loadFixture(deployTweetFixture);
