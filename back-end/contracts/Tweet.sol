@@ -3,14 +3,30 @@ pragma solidity ^0.8.9;
 import "hardhat/console.sol";
 
 /*
-on frontend
-Tweet.NewTweet(function(error, result) {
+on frontend, handle these 3 events
+Tweet.NewTweetEvent(function(error, result) {
     // do something with result.message / result.tweetOwner / result.tweetTime / uint tweetId
 })
+event NewTweetEvent(string tweetMessage, address tweetOwner, uint tweetTime, uint tweetId);
+event DeleteTweetEvent(uint tweetId);
+event EditTweetEvent(string tweetMessage, uint tweetTime, uint tweetId);
+
+converting time
+uint startDate = 1514764800; // 2018-01-01 00:00:00
+uint endDate = 1518220800; // 2018-02-10 00:00:00
+uint diff = Math.floor((endDate - startDate) / 60 / 60 / 24); // 40 days 
+
+console.log(Math.floor(new Date().getTime() / 1000) + 31536000); // 1year in seconds added, to fit solidity
+
+
+Put character limit front-end and back-end -> 140
+
 */
 
 contract Tweet {
-    event NewTweet(string tweetMessage, address tweetOwner, uint tweetTime, uint tweetId);
+    event NewTweetEvent(string tweetMessage, address tweetOwner, uint tweetTime, uint tweetId);
+    event DeleteTweetEvent(uint tweetId);
+    event EditTweetEvent(string tweetMessage, uint tweetTime, uint tweetId);
 
     struct TweetStruct {
         string TweetMessage;
@@ -34,23 +50,26 @@ contract Tweet {
         return tweets[id].visibility;
     }
 
-    function PostTweet(string memory message) public {
+    function PostTweet(string memory message, uint time) public {
         require(keccak256(abi.encodePacked(message)) != keccak256(abi.encodePacked("")));
-        uint time = block.timestamp;
+        //uint time = block.timestamp; // seconds since 1970-01-01
         address owner = msg.sender;
         tweets.push(TweetStruct(message, owner, time, true));
         uint id = tweets.length - 1;
         //tweetToOwner[id] = msg.sender;
-        emit NewTweet(message, owner, time, id);
+        emit NewTweetEvent(message, owner, time, id);
     }
 
     function DeleteTweet(uint id) public {
         require(msg.sender == tweets[id].TweetOwner);
-        // is deleting even possible? just hide on web?
+        tweets[id].visibility = false;
+        emit DeleteTweetEvent(id);
     }
 
     function EditTweet(uint id, string memory newMessage) public {
         require(msg.sender == tweets[id].TweetOwner);
-        // delete and repost?
+        require(keccak256(abi.encodePacked(newMessage)) != keccak256(abi.encodePacked("")));
+        tweets[id].TweetMessage = newMessage;
+        emit EditTweetEvent(newMessage, block.timestamp, id);
     }
 }
