@@ -99,7 +99,7 @@ describe("Tweet contract", function () {
             await hardhatTweet.PostTweet("My First Tweet!", now());
             await expect(
                 hardhatTweet.connect(addr1).DeleteTweet(0)
-            ).to.be.revertedWith("This tweet has a different owner.");
+            ).to.be.revertedWith("Ownable: caller is not the owner");
             expect(await hardhatTweet.GetTweetLength() == true);
         });
     });
@@ -127,7 +127,7 @@ describe("Tweet contract", function () {
             await hardhatTweet.PostTweet("My First Tweet!", now());
             await expect(
                 hardhatTweet.connect(addr1).EditTweet(0, "I changed this!")
-            ).to.be.revertedWith("This tweet has a different owner.");
+            ).to.be.revertedWith("Ownable: caller is not the owner");
             expect(await hardhatTweet.GetTweetEdited(0) == false);
         });
 
@@ -151,91 +151,84 @@ describe("Tweet contract", function () {
     });
 
     describe("All features together", function () {
-        it("TODO ======= Big Test: 6 tweets, 2 Delete, 4 Edit, 7 Fails", async function () {
+        it("Big Test: 4 tweets, 1 Delete, 1 Edit, 6 Fails", async function () {
             const { hardhatTweet, owner, addr1, addr2 } = await loadFixture(deployTweetFixture);
-            // Setup, calling functions (some purposefully failing)
+            // Setup, calling functions (some purposefully failing)            
             let time1 = now();
             await expect(hardhatTweet.PostTweet("My First Tweet!", time1))
                 .to.emit(hardhatTweet, "NewTweetEvent")
                 .withArgs("My First Tweet!", owner.address, time1, 0);
-            
+
+            await expect(hardhatTweet.PostTweet("", now()))
+                .to.be.revertedWith("Tweet cannot be empty.");
+
             await expect(
-                hardhatTweet.PostTweet("", now())
+                hardhatTweet.EditTweet(0, "")
             ).to.be.revertedWith("Tweet cannot be empty.");
 
+            let time2 = now();
+            await expect(hardhatTweet.PostTweet("My Second Tweet!", time2))
+                .to.emit(hardhatTweet, "NewTweetEvent")
+                .withArgs("My Second Tweet!", owner.address, time2, 1);
+
+            await expect(
+                hardhatTweet.PostTweet("ezsxdfcgvhbezwsxdrcfvghbjnwaesrxdvgybhjnkwaesrdfvghbjnkesrdctvgybhjnkmexrdctfvgbhjnkmlewrxctvfgybhjnkmsexdrfvghbjnkmzesxdrcfgvhbjnkwexrctfvygbhu", now())
+            ).to.be.revertedWith("Tweet is too long.");
+
+            await expect(
+                hardhatTweet.EditTweet(0, "ezsxdfcgvhbezwsxdrcfvghbjnwaesrxdvgybhjnkwaesrdfvghbjnkesrdctvgybhjnkmexrdctfvgbhjnkmlewrxctvfgybhjnkmsexdrfvghbjnkmzesxdrcfgvhbjnkwexrctfvygbhu")
+            ).to.be.revertedWith("Tweet is too long.");
+
+            let time3 = now();
+            await expect(hardhatTweet.connect(addr1).PostTweet("My Third Tweet!", time3))
+                .to.emit(hardhatTweet, "NewTweetEvent")
+                .withArgs("My Third Tweet!", addr1.address, time3, 2);
+
+            await expect(hardhatTweet.connect(addr1).DeleteTweet(1))
+                .to.be.revertedWith("Ownable: caller is not the owner");
+
+            await expect(hardhatTweet.connect(owner).DeleteTweet(1))
+                .to.emit(hardhatTweet, "DeleteTweetEvent")
+                .withArgs(1);
+
+            let time4 = now();
+            await expect(hardhatTweet.connect(addr2).PostTweet("My Fourth Tweet!", time4))
+                .to.emit(hardhatTweet, "NewTweetEvent")
+                .withArgs("My Fourth Tweet!", addr2.address, time4, 3);
+
+            await expect(hardhatTweet.connect(addr2).EditTweet(1, "I changed this!"))
+                .to.be.revertedWith("Ownable: caller is not the owner");
+
+            await expect(hardhatTweet.connect(addr2).EditTweet(3, "My Fourth Edited Tweet!"))
+                .to.emit(hardhatTweet, "EditTweetEvent")
+                .withArgs("My Fourth Edited Tweet!", 3);
+
             // Check all data
-            expect(await hardhatTweet.GetTweetLength() == 0);
             expect(await hardhatTweet.GetTweetMessage(0)).to.equal("My First Tweet!");
             expect(await hardhatTweet.GetTweetOwner(0)).to.equal(owner.address);
             expect(await hardhatTweet.GetTweetTime(0)).to.equal(time1);
             expect(await hardhatTweet.GetTweetVisibility(0)).to.equal(true);
             expect(await hardhatTweet.GetTweetEdited(0)).to.equal(false);
-            expect(await hardhatTweet.GetTweetLength() == 1);
-            
-            /*
-            let time1 = now();
-            await hardhatTweet.PostTweet("My First Tweet!", time1);
-            delay(2000);
-            let time2 = now();
-            await hardhatTweet.connect(addr1).PostTweet("My Second Tweet!", time2);
-
-            expect(await hardhatTweet.GetTweetMessage(0)).to.equal("My First Tweet!");
-            expect(await hardhatTweet.GetTweetOwner(0)).to.equal(owner.address);
-            expect(await hardhatTweet.GetTweetTime(0)).to.equal(time1);
-            expect(await hardhatTweet.GetTweetVisibility(0)).to.equal(true);
-            expect(hardhatTweet.tweets.length == 1);
 
             expect(await hardhatTweet.GetTweetMessage(1)).to.equal("My Second Tweet!");
-            expect(await hardhatTweet.GetTweetOwner(1)).to.equal(addr1.address);
+            expect(await hardhatTweet.GetTweetOwner(1)).to.equal(owner.address);
             expect(await hardhatTweet.GetTweetTime(1)).to.equal(time2);
-            expect(await hardhatTweet.GetTweetVisibility(1)).to.equal(true);
-            expect(hardhatTweet.tweets.length == 2);
+            expect(await hardhatTweet.GetTweetVisibility(1)).to.equal(false);
+            expect(await hardhatTweet.GetTweetEdited(1)).to.equal(false);
 
-            await hardhatTweet.PostTweet("My First Tweet!", now());
-            await hardhatTweet.DeleteTweet(0);
-            expect(await hardhatTweet.GetTweetVisibility(0)).to.equal(false);
-            expect(hardhatTweet.tweets.length == 1);
+            expect(await hardhatTweet.GetTweetMessage(2)).to.equal("My Third Tweet!");
+            expect(await hardhatTweet.GetTweetOwner(2)).to.equal(addr1.address);
+            expect(await hardhatTweet.GetTweetTime(2)).to.equal(time3);
+            expect(await hardhatTweet.GetTweetVisibility(2)).to.equal(true);
+            expect(await hardhatTweet.GetTweetEdited(2)).to.equal(false);
 
-            await hardhatTweet.PostTweet("My First Tweet!", now());
-            await expect(hardhatTweet.DeleteTweet(0))
-                .to.emit(hardhatTweet, "DeleteTweetEvent")
-                .withArgs(0);
-            
-            await hardhatTweet.PostTweet("My First Tweet!", now());
-            await expect(
-                hardhatTweet.connect(addr1).DeleteTweet(0)
-            ).to.be.revertedWith("This tweet has a different owner.");
-            expect(hardhatTweet.GetTweetVisibility(0) == true);
+            expect(await hardhatTweet.GetTweetMessage(3)).to.equal("My Fourth Edited Tweet!");
+            expect(await hardhatTweet.GetTweetOwner(3)).to.equal(addr2.address);
+            expect(await hardhatTweet.GetTweetTime(3)).to.equal(time4);
+            expect(await hardhatTweet.GetTweetVisibility(3)).to.equal(true);
+            expect(await hardhatTweet.GetTweetEdited(3)).to.equal(true);
 
-            await hardhatTweet.PostTweet("My First Tweet!", now());
-            await hardhatTweet.EditTweet(0, "I changed this!");
-            expect(await hardhatTweet.GetTweetMessage(0)).to.equal("I changed this!");
-            expect(await hardhatTweet.GetTweetEdited(0)).to.equal(true);
-            expect(hardhatTweet.tweets.length == 1);
-
-            await hardhatTweet.PostTweet("My First Tweet!", now());
-            await expect(hardhatTweet.EditTweet(0, "I changed this!"))
-                .to.emit(hardhatTweet, "EditTweetEvent")
-                .withArgs("I changed this!", 0);
-
-            await hardhatTweet.PostTweet("My First Tweet!", now());
-            await expect(
-                hardhatTweet.connect(addr1).EditTweet(0, "I changed this!")
-            ).to.be.revertedWith("This tweet has a different owner.");
-            expect(hardhatTweet.GetTweetEdited(0) == false);
-
-            await hardhatTweet.PostTweet("My First Tweet!", now());
-            await expect(
-                hardhatTweet.EditTweet(0, "")
-            ).to.be.revertedWith("Tweet cannot be empty.");
-            expect(hardhatTweet.GetTweetEdited(0) == false);
-
-            await hardhatTweet.PostTweet("My First Tweet!", now());
-            await expect(
-                hardhatTweet.EditTweet(0, "ezsxdfcgvhbezwsxdrcfvghbjnwaesrxdvgybhjnkwaesrdfvghbjnkesrdctvgybhjnkmexrdctfvgbhjnkmlewrxctvfgybhjnkmsexdrfvghbjnkmzesxdrcfgvhbjnkwexrctfvygbhu")
-            ).to.be.revertedWith("Tweet is too long.");
-            expect(hardhatTweet.GetTweetEdited(0) == false);
-            */
+            expect(await hardhatTweet.GetTweetLength() == 4);
         });
     });
 });
