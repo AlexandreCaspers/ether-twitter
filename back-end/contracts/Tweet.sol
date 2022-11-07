@@ -40,7 +40,7 @@ contract Tweet {
         bool edited;
     }
 
-    TweetStruct[] public tweets;
+    TweetStruct[] private tweets;
     //mapping (uint => address) public tweetToOwner;
     function GetTweetMessage(uint id) public view returns(string memory) {
         return tweets[id].TweetMessage;
@@ -56,6 +56,9 @@ contract Tweet {
     }
     function GetTweetEdited(uint id) public view returns(bool) {
         return tweets[id].edited;
+    }
+    function GetTweetLength() public view returns(uint) {
+        return tweets.length;
     }
 
     function PostTweet(string memory message, uint time) public {
