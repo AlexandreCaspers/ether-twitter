@@ -65,6 +65,9 @@ contract Tweet is Ownable {
     function GetTweetLength() public view returns(uint) {
         return tweets.length;
     }
+    function GetTweets() public view returns(TweetStruct[] memory) {
+        return tweets;
+    }
 
     /**
      * @dev Creates a Twwet
