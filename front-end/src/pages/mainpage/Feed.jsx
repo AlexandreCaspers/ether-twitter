@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';  
 import { FeedMakeTweetDiv, FeedMainDiv, FeedMetaMaskDiv, FeedTitleDiv } from './styled';
-import {Input, Button,FormControl, FormErrorMessage, Textarea} from '@chakra-ui/react'
+import { Button,FormControl, FormErrorMessage, Textarea} from '@chakra-ui/react'
 import SMART_CONTRACT from '../../smartContract';
 import detectEthereumProvider from '@metamask/detect-provider';
 import * as Yup from "yup";
@@ -20,7 +20,14 @@ useEffect( ()=>{
    {
       window.ethereum
        .request({ method: "eth_requestAccounts" })
-       .then(handleAccountsChanged) //will call the handleAccountsChanged function which will save the wallet address on our userAccount variable
+       .then((accounts) => {
+         if (accounts.length === 0) {
+            // MetaMask is locked or the user has not connected any accounts
+            console.log('Please connect to MetaMask.');
+          } else if (accounts[0] !== userAccount) {
+            setUserAccount(accounts[0]);
+          }
+       }) //will call the handleAccountsChanged function which will save the wallet address on our userAccount variable
        .catch((err) => {
          // Some unexpected error.
          // For backwards compatibility reasons, if no accounts are available,
@@ -29,7 +36,7 @@ useEffect( ()=>{
        });
       setIsMetamaskHandled(true)
    }
-},[])
+},[userAccount])
 
 //function for handling change of metamask accounts
 function handleAccountsChanged(accounts) {
@@ -109,19 +116,26 @@ const connectToMetamask = async () => {
           })}
 
           //actions on Submit
-          onSubmit = { (values, actions) => {
+          onSubmit = { async (values, actions) => {
             
             // let requestBody = {
             //   title: values.title,
             //   body: values.body
             // }
 
-            alert(values.body)
+            // alert(values.body)
             
 
             // CODE HERE MAKE TWEET TO THE CONTRACT 
 
+            //  SMART_CONTRACT.methods.PostTweet(values.body, Math.floor(new Date().getTime())/1000 ).send({from: userAccount});
+            actions.resetForm();
+            actions.setSubmitting(false);
 
+            SMART_CONTRACT.methods.GetTweetMessage(0).send({from: userAccount}).then( (response) => 
+            {
+               console.log(response); 
+            }).catch ( (err) => console.log(`Err: ${err}`))
             // let answer = CreatePost(requestBody,token)
             // answer.then( (response) => {
             //   GetPosts(`posts?page=1`, token, setPostsOnDisplay);
@@ -131,8 +145,7 @@ const connectToMetamask = async () => {
             // .catch( (error)=> {})
 
             //CODE API REQUEST AND WAIT FOR ANSWER
-            actions.resetForm();
-            actions.setSubmitting(false);
+            
           }}
           >
             { (props) => {
