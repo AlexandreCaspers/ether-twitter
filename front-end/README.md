@@ -4,3 +4,6 @@
 
 ### PACKAGES USED
 - Styled-Components
+- Yup
+- Formik
+- Metamask
