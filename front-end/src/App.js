@@ -4,7 +4,7 @@ import Feed from './pages/mainpage/Feed';
 function App() {
   return (
     <ChakraProvider>
-      <Feed></Feed>
+      <Feed/>
     </ChakraProvider>
     
   );

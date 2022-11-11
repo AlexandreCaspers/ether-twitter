@@ -11,8 +11,6 @@ flex-direction: column;
 align-items: center; 
 `
 
-
-
 export const FeedTitleDiv = styled.div`
 width: 60%; 
 height: 15vh; 
@@ -25,9 +23,7 @@ font-weight: 700;
 h1 {
     padding-top: 5vh; 
 }
-
 `
-
 
 export const FeedMetaMaskDiv = styled.div`
 width: 45%; 
@@ -38,8 +34,13 @@ Button{
     font-size: 1.3rem;
     padding: 4% 0%; 
     font-weight: 500; 
-    background-color: #567f98;
+    background-color: #0a8e33;
     color: white;
+
+    :hover {
+        background-color: #0a8e33;
+        opacity: 0.8;
+    }
 }`
 
 export const FeedContentDiv = styled.div`
@@ -60,8 +61,14 @@ Button{
     width: 20%; 
     margin-left: 5px; 
     color: white;
-    background-color: #57baf7; 
-    border: 1px solid white;
+    background-color: #0598d0; 
+    border: 2px solid white;
+    /* box-shadow: 1px 1px 1px;  */
+
+    :hover {
+        background-color: #0598d0;
+        opacity: 0.8;
+    }
      
 
 }
