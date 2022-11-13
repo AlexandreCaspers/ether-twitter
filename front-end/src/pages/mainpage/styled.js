@@ -1,8 +1,9 @@
 import styled from "styled-components";
 
+//main div encapsulating entire page
 export const FeedMainDiv = styled.div`
 width: 100vw; 
-height: fit-content; //dynamic height to act as a feed
+height: auto; //dynamic height to act as a feed
 min-height: 100vh; 
 background-color: #1DA1F2; //copying twitter's original color
 overflow-y: scroll; //allow scrollling 
@@ -14,10 +15,14 @@ hr{
     width: 50%; 
     color: white;
     margin-top: 3vh;
-    
+}
+
+#feedLoadingButton
+{
+    margin-top: 5vh; 
 }
 `
-
+//divi holding the title of the webpage
 export const FeedTitleDiv = styled.div`
 width: 60%; 
 height: 15vh; 
@@ -31,13 +36,12 @@ h1 {
     padding-top: 5vh; 
 }
 `
-
+//div handling the metamask button portion, will disappear once connected
 export const FeedMetaMaskDiv = styled.div`
 width: 40%; 
 display: flex;
 justify-content: center;
 margin-bottom: 5vh;
-
 
 Button{
     width: 45%; 
@@ -55,8 +59,6 @@ Button{
 }`
 
 export const FeedMakeTweetDiv = styled.div`
-
-/* background-color: yellow;  */
 width: 45%; 
 display: flex; 
 Form{
@@ -91,7 +93,16 @@ Form{
         background-color: #0a8e33;
         opacity: 0.8;
     }
-     
-
 }
+`
+
+export const FeedTweetsDiv = styled.div`
+    width: 45%; 
+    margin-top: 2vh;
+    height: max-content; 
+    overflow-y: auto; 
+    display: flex; 
+    flex-direction: column; 
+
+   
 `

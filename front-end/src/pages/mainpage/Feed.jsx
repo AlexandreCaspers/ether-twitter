@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';  
-import { FeedMakeTweetDiv, FeedMainDiv, FeedMetaMaskDiv, FeedTitleDiv } from './styled';
+import { FeedMakeTweetDiv, FeedMainDiv, FeedMetaMaskDiv, FeedTitleDiv, FeedTweetsDiv } from './styled';
 import { Button,FormControl, FormErrorMessage, Textarea} from '@chakra-ui/react'
 import SMART_CONTRACT from '../../smartContract';
 import detectEthereumProvider from '@metamask/detect-provider';
 import * as Yup from "yup";
 import {Formik, Form, Field} from 'formik';
+import TweetContainer from '../../components/TweetContainer/TweetContainer';
 
 
 
@@ -13,10 +14,18 @@ function Feed() {
 let [displayButton, setDisplayButton] = useState(false); 
 let [userAccount, setUserAccount] = useState(null)
 let [isLoading, setIsLoading] = useState(false); 
-let [isMetamaskHandled, setIsMetamaskHandled] = useState(false)
+let [isMetamaskHandled, setIsMetamaskHandled] = useState(false); 
+let [feedTweets, setFeedTweets] = useState([]);
+
+let loadingNewMessage = false;
+
+
+useEffect( () => {
+  populateFeed(setFeedTweets)
+},[])
 
 useEffect( ()=>{
-   if(window.ethereum.selectedAddress)
+   if(window.ethereum && window.ethereum.selectedAddress)
    {
       window.ethereum
        .request({ method: "eth_requestAccounts" })
@@ -55,7 +64,7 @@ function handleAccountsChanged(accounts) {
  //4.- Prompt the user to switch to the goerli testnet (if not there), (if there) request connection to metamask account
  //5.- Once connection is established, get address from metamask
  //6.- Save address to our userAccount variable to consume the smart contract
-const connectToMetamask = async () => {
+async function connectToMetamask(){
 
    //detect ethereum provider
    setIsLoading(true)
@@ -93,81 +102,118 @@ const connectToMetamask = async () => {
    setIsMetamaskHandled(true)
    
 }
+
+
+//function that will request the api for tweets to load the feed
+async function populateFeed(setFeedTweets){
+            SMART_CONTRACT.methods.GetTweets().call().then( (response) => 
+            {
+              setFeedTweets(response)
+            }).catch ( (err) => console.log(`Err: ${err}`))
+}
+
+let displayTweets = feedTweets.map( (tweet, index) => {
+  return <TweetContainer 
+  tweet={tweet}
+  key={index}
+  />
+})
+
+displayTweets = displayTweets.reverse();
   
   return (
     <FeedMainDiv>
-     <FeedTitleDiv> 
+      <FeedTitleDiv>
         <h1>Welcome to Ethereum Twitter!</h1>
-     </FeedTitleDiv>
-    {isMetamaskHandled ? <span></span> : <FeedMetaMaskDiv>
-        {<Button disabled={displayButton} isLoading={isLoading} onClick={()=> connectToMetamask()}>ENABLE METAMASK</Button>}
-     </FeedMetaMaskDiv>}
-     <FeedMakeTweetDiv>
-
-     <Formik
-          initialValues={ { body: ""}}
-
+      </FeedTitleDiv>
+      {isMetamaskHandled ? (
+        <span></span>
+      ) : (
+        <FeedMetaMaskDiv>
+          {
+            <Button
+              disabled={displayButton}
+              isLoading={isLoading}
+              onClick={() => connectToMetamask()}
+            >
+              ENABLE METAMASK
+            </Button>
+          }
+        </FeedMetaMaskDiv>
+      )}
+      <FeedMakeTweetDiv>
+        <Formik
+          initialValues={{ body: "" }}
           //input control
-          validationSchema= { Yup.object({
+          validationSchema={Yup.object({
             body: Yup.string()
-            .min(5, "Minimum 5 characters")
-            .max(140, "Max 140 caractcters")
-            .required("Obligatory Field")
+              .min(5, "Minimum 5 characters")
+              .max(140, "Max 140 caractcters")
+              .required("Obligatory Field"),
           })}
-
           //actions on Submit
-          onSubmit = { async (values, actions) => {
-            
-            // let requestBody = {
-            //   title: values.title,
-            //   body: values.body
-            // }
+          onSubmit={async (values, actions) => {
+            //values.body is the content inside
+            // set loading animation to button while tweet is being created
+            loadingNewMessage = true;
 
-            // alert(values.body)
-            
-
-            // CODE HERE MAKE TWEET TO THE CONTRACT 
-
-            //  SMART_CONTRACT.methods.PostTweet(values.body, Math.floor(new Date().getTime())/1000 ).send({from: userAccount});
-            actions.resetForm();
-            actions.setSubmitting(false);
-
-            SMART_CONTRACT.methods.GetTweetMessage(0).send({from: userAccount}).then( (response) => 
-            {
-               console.log(response); 
-            }).catch ( (err) => console.log(`Err: ${err}`))
-            // let answer = CreatePost(requestBody,token)
-            // answer.then( (response) => {
-            //   GetPosts(`posts?page=1`, token, setPostsOnDisplay);
-            //   actions.resetForm(); 
-            //   actions.setSubmitting(false)
-            // })
-            // .catch( (error)=> {})
-
-            //CODE API REQUEST AND WAIT FOR ANSWER
-            
+            SMART_CONTRACT.methods
+              .PostTweet(values.body, Math.floor(new Date().getTime() / 1000))
+              .send({ from: userAccount })
+              .then((response) => {
+                console.log(response);
+                populateFeed(setFeedTweets)
+                loadingNewMessage = false; 
+                actions.resetForm();
+                actions.setSubmitting(false);
+              })
+              .catch((err) => {
+                console.log(`Error: ${err}`);
+              });
           }}
-          >
-            { (props) => {
-              return(
-                <Form>
-                  <Field name="body">
-                    {({field, form}) => (
-                      <FormControl isInvalid={form.errors.body && form.touched.body}>
-                        <Textarea {...field} className = "bodyInput" placeholder='What do you want to share with your blockchain?' _placeholder={{opacity: 0.8,color: '#323941'}}/>
-                        <FormErrorMessage className = "errorMessage">{form.errors.body}</FormErrorMessage>
-                      </FormControl>
-                    )}
-                  </Field>
-                  <Button disabled={userAccount === null} id= 'postButton' variant='solid' isLoading={props.isSubmitting} type='submit'>TWEET</Button>
-                </Form>
-              )
-            }}
-          </Formik>
-     </FeedMakeTweetDiv>
-     <hr/>
+        >
+          {(props) => {
+            return (
+              <Form>
+                <Field name="body">
+                  {({ field, form }) => (
+                    <FormControl
+                      isInvalid={form.errors.body && form.touched.body}
+                    >
+                      <Textarea
+                        {...field}
+                        className="bodyInput"
+                        placeholder="What do you want to share with your blockchain?"
+                        _placeholder={{ opacity: 0.8, color: "#323941" }}
+                      />
+                      <FormErrorMessage className="errorMessage">
+                        {form.errors.body}
+                      </FormErrorMessage>
+                    </FormControl>
+                  )}
+                </Field>
+                <Button
+                  disabled={userAccount === null}
+                  id="postButton"
+                  variant="solid"
+                  isLoading={loadingNewMessage}
+                  type="submit"
+                >
+                  TWEET
+                </Button>
+              </Form>
+            );
+          }}
+        </Formik>
+      </FeedMakeTweetDiv>
+      <hr />
+
+     {feedTweets[0] ? <FeedTweetsDiv>
+      {displayTweets}
+     </FeedTweetsDiv>: <Button id="feedLoadingButton" isLoading={true} ></Button>}
+
     </FeedMainDiv>
-  )
+  );
 }
 
 export default Feed
