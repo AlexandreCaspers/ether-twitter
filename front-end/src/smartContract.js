@@ -2,7 +2,7 @@ import ABI from '../src/constants/abi';
 
 let Web3 = require("web3");
 
-export const CONTRACT_ADDRESS = "0xBEb19A134E55841260eb82354F8Aa4987d3b44dA"; 
+export const CONTRACT_ADDRESS = "0xD517074D8Da2A1cd107242222A9BCc63372dFC53"; 
 
 //If no metamask use  my own goerli node to read
 export const web3 = new Web3(window.ethereum || new Web3(new  Web3.providers.WebsocketProvider(
@@ -13,3 +13,5 @@ export const web3 = new Web3(window.ethereum || new Web3(new  Web3.providers.Web
   const SMART_CONTRACT = new web3.eth.Contract(ABI,CONTRACT_ADDRESS); 
 
   export default SMART_CONTRACT; 
+
+  

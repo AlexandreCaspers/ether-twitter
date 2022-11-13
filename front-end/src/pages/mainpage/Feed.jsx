@@ -13,7 +13,13 @@ function Feed() {
 let [displayButton, setDisplayButton] = useState(false); 
 let [userAccount, setUserAccount] = useState(null)
 let [isLoading, setIsLoading] = useState(false); 
-let [isMetamaskHandled, setIsMetamaskHandled] = useState(false)
+let [isMetamaskHandled, setIsMetamaskHandled] = useState(false); 
+let [feedTweets, setFeedTweets] = useState([]);
+
+
+// useEffect( () => {
+  
+// },[])
 
 useEffect( ()=>{
    if(window.ethereum.selectedAddress)
@@ -93,6 +99,10 @@ const connectToMetamask = async () => {
    setIsMetamaskHandled(true)
    
 }
+
+
+//function that will request the api for tweets to load the feed
+
   
   return (
     <FeedMainDiv>
@@ -106,7 +116,6 @@ const connectToMetamask = async () => {
 
      <Formik
           initialValues={ { body: ""}}
-
           //input control
           validationSchema= { Yup.object({
             body: Yup.string()
@@ -117,32 +126,28 @@ const connectToMetamask = async () => {
 
           //actions on Submit
           onSubmit = { async (values, actions) => {
+           
+            //values.body is the content inside
+            // set loading animation to button while tweet is being created
+            actions.setSubmitting(true)
+
+             SMART_CONTRACT.methods.PostTweet(values.body, Math.floor(new Date().getTime()/1000) ).send({from: userAccount}).then( (response) => {
+              console.log(response); 
+              actions.resetForm();
+              actions.setSubmitting(false);
+
+             }).catch( (err) => {
+              console.log(`Error: ${err}`)
+             });
             
-            // let requestBody = {
-            //   title: values.title,
-            //   body: values.body
-            // }
-
-            // alert(values.body)
-            
-
-            // CODE HERE MAKE TWEET TO THE CONTRACT 
-
-            //  SMART_CONTRACT.methods.PostTweet(values.body, Math.floor(new Date().getTime())/1000 ).send({from: userAccount});
-            actions.resetForm();
-            actions.setSubmitting(false);
-
-            SMART_CONTRACT.methods.GetTweetMessage(0).send({from: userAccount}).then( (response) => 
-            {
-               console.log(response); 
-            }).catch ( (err) => console.log(`Err: ${err}`))
-            // let answer = CreatePost(requestBody,token)
-            // answer.then( (response) => {
-            //   GetPosts(`posts?page=1`, token, setPostsOnDisplay);
-            //   actions.resetForm(); 
-            //   actions.setSubmitting(false)
-            // })
-            // .catch( (error)=> {})
+            // actions.setSubmitting(true)
+            // SMART_CONTRACT.methods.GetTweets().call().then( (response) => 
+            // {
+            //    console.log(response); 
+            //    actions.resetForm();
+            //     actions.setSubmitting(false);
+            // }).catch ( (err) => console.log(`Err: ${err}`))
+          
 
             //CODE API REQUEST AND WAIT FOR ANSWER
             
