@@ -1,32 +1,7 @@
 pragma solidity ^0.8.9;
 
 import "hardhat/console.sol";
-import "./Ownable.sol";
-
-/*
-on frontend, handle these 3 events
-Tweet.NewTweetEvent(function(error, result) {
-    // do something with result.message / result.tweetOwner / result.tweetTime / uint tweetId
-})
-event NewTweetEvent(string tweetMessage, address tweetOwner, uint tweetTime, uint tweetId);
-event DeleteTweetEvent(uint tweetId);
-event EditTweetEvent(string tweetMessage, uint tweetId);
-
-function now() {
-    return Math.floor(new Date().getTime() / 1000);
-}
-
-//converting time
-uint startDate = 1514764800; // 2018-01-01 00:00:00
-uint endDate = 1518220800; // 2018-02-10 00:00:00
-uint diff = Math.floor((endDate - startDate) / 60 / 60 / 24); // 40 days 
-
-console.log(Math.floor(new Date().getTime() / 1000) + 31536000); // 1year in seconds added, to fit solidity
-
-
-Put character limit front-end -> 140
-*/
-
+//import "./Ownable.sol";
 
 contract Tweet is Ownable {
     // Events
