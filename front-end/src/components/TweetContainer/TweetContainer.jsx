@@ -6,7 +6,7 @@ import {DeleteIcon, EditIcon} from '@chakra-ui/icons'
 
 function TweetContainer(props) {
 
- 
+ //MAYBE HIDE BOTH ACTION BUTTONS IF NOT THE OWNER
   
     if (props.tweet.visibility)
   {
@@ -20,7 +20,7 @@ function TweetContainer(props) {
         <TweetMessageDiv>
           <p>{props.tweet.TweetMessage}</p>
         </TweetMessageDiv>
-        <TweetActionDiv>
+        { props.user === props.tweet.TweetOwner.toLowerCase() ? <TweetActionDiv>
           <IconButton 
           aria-label="Edit Tweet" 
           icon={<EditIcon />} 
@@ -33,7 +33,7 @@ function TweetContainer(props) {
             icon={<DeleteIcon />}
             onClick={() => props.deleteTweet(props.id)}
           />
-        </TweetActionDiv>
+        </TweetActionDiv> : <></>}
       </TweetContainerDiv>
     );
  }
