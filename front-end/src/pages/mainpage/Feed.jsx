@@ -57,6 +57,20 @@ function handleAccountsChanged(accounts) {
    }
  }
 
+const deleteTweet = (id, setIsLoading) => {
+  setIsLoading(true)
+  if (window.confirm(`You will permanently delete this tweet, are you sure?`)) {
+    SMART_CONTRACT.methods.DeleteTweet(id)
+    .send({ from: userAccount })
+    .then((response) => {
+      populateFeed(setFeedTweets)
+    })
+    .catch((err) => {
+      console.log(`Error: ${err}`);
+    });
+  }
+};
+
  //function handling connection to metamask
  //1.- checks if there is an ethereum provider for the browser
  //2.- If it's not Metamask, prompt the user to install it
@@ -112,11 +126,14 @@ async function populateFeed(setFeedTweets){
             }).catch ( (err) => console.log(`Err: ${err}`))
 }
 
+//map that will load all the tweets
 let displayTweets = feedTweets.map( (tweet, index) => {
   return <TweetContainer 
   tweet={tweet}
   key={index}
+  id ={index}
   user={userAccount}
+  deleteTweet={(id) => deleteTweet(id)}
   />
 })
 
@@ -162,7 +179,6 @@ displayTweets = displayTweets.reverse();
               .PostTweet(values.body, Math.floor(new Date().getTime() / 1000))
               .send({ from: userAccount })
               .then((response) => {
-                console.log(response);
                 populateFeed(setFeedTweets)
                 loadingNewMessage = false; 
                 actions.resetForm();
