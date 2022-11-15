@@ -1,7 +1,6 @@
 export function convertDateToRightFormat(dateInSeconds)
 {
     let currentTime = Math.floor(new Date().getTime() / 1000); 
-
     let remainingTime = currentTime - dateInSeconds; 
 
     if(remainingTime < 60)
@@ -25,7 +24,7 @@ export function convertDateToRightFormat(dateInSeconds)
         }
     }
     else{
-        let days = Math.floor(remainingTime)/86400; 
+        let days = Math.floor(remainingTime/86400); 
         if(days === 1)
         {
             return "1 day ago"
