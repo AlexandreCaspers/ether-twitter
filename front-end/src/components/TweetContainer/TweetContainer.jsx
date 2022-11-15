@@ -21,13 +21,17 @@ function TweetContainer(props) {
           <p>{props.tweet.TweetMessage}</p>
         </TweetMessageDiv>
         <TweetActionDiv>
-          <IconButton aria-label="Edit Tweet" icon={<EditIcon />} />
+          <IconButton 
+          aria-label="Edit Tweet" 
+          icon={<EditIcon />} 
+          isDisabled={props.user !== props.tweet.TweetOwner.toLowerCase()}
+          />
+          
           <IconButton
             aria-label="Delete Tweet"
             isDisabled={props.user !== props.tweet.TweetOwner.toLowerCase()}
             icon={<DeleteIcon />}
-            onClick = {() =>  props.deleteTweet(props.id)}
-            
+            onClick={() => props.deleteTweet(props.id)}
           />
         </TweetActionDiv>
       </TweetContainerDiv>
