@@ -116,6 +116,7 @@ let displayTweets = feedTweets.map( (tweet, index) => {
   return <TweetContainer 
   tweet={tweet}
   key={index}
+  user={userAccount}
   />
 })
 

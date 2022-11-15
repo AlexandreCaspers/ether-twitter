@@ -9,6 +9,7 @@ function TweetContainer(props) {
     //second row tweet itself
     //thrid let you edit or delete tweet (with icons)
     //OPTIONAL put a nice avatar, maybe red if yours
+    console.log(props)
   return (
     <TweetContainerDiv>
         <TweetNameAndTimeDiv>
@@ -21,7 +22,7 @@ function TweetContainer(props) {
         </TweetMessageDiv>
         <TweetActionDiv>
           <IconButton aria-label='Edit Tweet' icon={<EditIcon/>}/>
-          <IconButton aria-label='Delete Tweet' icon={<DeleteIcon/>} />
+          <IconButton aria-label='Delete Tweet' isDisabled={(props.user != props.tweet.TweetOwner.toLowerCase() )} icon={<DeleteIcon/>} />
         </TweetActionDiv>
     </TweetContainerDiv>
   )
