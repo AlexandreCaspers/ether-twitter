@@ -31,11 +31,23 @@ export const TweetMessageDiv = styled.div`
 width: 100%; 
 height: 60%; 
 padding: 2% 2%;
-;
 
 p{
     font-weight: 400;
     font-size: 1.1rem;
+}
+`
+export const TweetActionDiv = styled.div`
+display: flex;
+width: 100%; 
+height: 20%; 
+justify-content: space-evenly; 
+padding: 2% 2%; 
+
+Button{
+    font-size: 1.2rem;
+    background-color: white;
+    color: grey;
 }
 
 `

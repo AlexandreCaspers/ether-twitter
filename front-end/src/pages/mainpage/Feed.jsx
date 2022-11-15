@@ -148,7 +148,7 @@ displayTweets = displayTweets.reverse();
           validationSchema={Yup.object({
             body: Yup.string()
               .min(5, "Minimum 5 characters")
-              .max(140, "Max 140 caractcters")
+              .max(140, "Max 140 caracters")
               .required("Obligatory Field"),
           })}
           //actions on Submit
