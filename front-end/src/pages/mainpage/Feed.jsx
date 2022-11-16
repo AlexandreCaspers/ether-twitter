@@ -57,8 +57,7 @@ function handleAccountsChanged(accounts) {
    }
  }
 
-const deleteTweet = (id, setIsLoading) => {
-  setIsLoading(true)
+const deleteTweet = (id) => {
   if (window.confirm(`You will permanently delete this tweet, are you sure?`)) {
     SMART_CONTRACT.methods.DeleteTweet(id)
     .send({ from: userAccount })
@@ -134,6 +133,7 @@ let displayTweets = feedTweets.map( (tweet, index) => {
   id ={index}
   user={userAccount}
   deleteTweet={(id) => deleteTweet(id)}
+  setFeedTweets = {() => populateFeed(setFeedTweets)}
   />
 })
 
@@ -190,6 +190,7 @@ displayTweets = displayTweets.reverse();
           }}
         >
           {(props) => {
+            
             return (
               <Form>
                 <Field name="body">

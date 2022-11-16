@@ -25,6 +25,11 @@ padding: 1% 2%;
 font-style: italic; 
 color: grey;
 font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+
+#spaceSpan
+{
+    padding: 0 10px
+}
 `
 
 export const TweetMessageDiv = styled.div`
