@@ -25,6 +25,11 @@ padding: 1% 2%;
 font-style: italic; 
 color: grey;
 font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+
+#spaceSpan
+{
+    padding: 0 10px
+}
 `
 
 export const TweetMessageDiv = styled.div`
@@ -40,9 +45,10 @@ p{
 export const TweetActionDiv = styled.div`
 display: flex;
 width: 100%; 
-height: 20%; 
+height: 10%; 
 justify-content: space-evenly; 
-padding: 2% 2%; 
+padding: 1% 2%;
+margin-top: -1.5%; 
 
 Button{
     font-size: 1.2rem;
