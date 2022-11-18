@@ -3,7 +3,18 @@
 Alexandre Caspers, Martin Hugo De Barros Sejas, Grace Jiyoung Yun, Erlei Lin
 
 ## Project Description
-A mini recreation of Twitter using Ethereum and Solidity for the backend and ReactJS for the frontend, deployed on the Goerli Testnet.
+A mini recreation of Twitter using Ethereum and Solidity for the backend and ReactJS for the frontend, with our Smart Contract deployed on the Goerli Testnet.
+
+Check out the latest live build! (Desktop Only)
+<br>
+https://ethereum-twitter.surge.sh/
+
+<i>Smart Contract Address: **0xD517074D8Da2A1cd107242222A9BCc63372dFC53** </i>
+
+Track the smart contract on etherscan:
+<br>
+ https://goerli.etherscan.io/address/0xD517074D8Da2A1cd107242222A9BCc63372dFC53)
+
 
 Our 'ether-twitter' allows anyone to\
 **without metamask**
@@ -14,6 +25,13 @@ Our 'ether-twitter' allows anyone to\
 * edit own tweets
 * delete own tweets
 
+**additional features**
+* Users without a connected account have the 'Tweet' button disabled
+* Metamask users on the wrong network, will be prompted to switch to the Goerli Testnet
+* Connected Users can ONLY delete and/or edit their OWN tweets
+* 'Edited' label to edited tweets
+* Age of tweet is shown
+
 This project demonstrates a basic Hardhat use case, containing
 * a sample contract
 * a test for the contract
@@ -21,7 +39,10 @@ This project demonstrates a basic Hardhat use case, containing
 # Installation and Running
 Try running some of the following tasks:
 
+(Make sure you have the latest version of Node installed)
+
 ```shell
+npm install
 npx hardhat help
 npx hardhat test
 REPORT_GAS=true npx hardhat test

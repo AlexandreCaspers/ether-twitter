@@ -1,5 +1,5 @@
 import React from 'react'
-import {Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Button} from '@chakra-ui/react'
+import {Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure, Button} from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import * as Yup from "yup";
@@ -7,22 +7,20 @@ import {Formik, Form, Field} from 'formik';
 import { FormControl, FormErrorMessage, Textarea} from '@chakra-ui/react'
 import SMART_CONTRACT from '../../smartContract';
 
+//use formik to control safe user input
 
 
 function EditModal(props) {
+  //function for the modal
     const {isOpen, onOpen} = useDisclosure()
     
+  //save original value of the tweet before editing, to check 
     const [originalValue, setOriginalValue] = useState(props.tweetMessage)
 
+    //variable for determing if the dit button should be loading or not
     let isEditing = false
-    // <Textarea
-    //                 value={value}
-    //                 onChange={(event) => {
-    //                   setValue(event.target.value);
-    //                 }}
-    //                 minHeight="15vh"
-    //               />
-
+  
+    //reload the container if showModal has been changed
     useEffect( ()=>{
         onOpen()
     },[props.showModal])
