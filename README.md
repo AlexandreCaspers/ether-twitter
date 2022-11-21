@@ -1,6 +1,6 @@
 # ether-twitter
 ## Group Members
-Alexandre Caspers, Martin Hugo De Barros Sejas, Grace Jiyoung Yun, Erlei Lin
+Alexandre Caspers, Martin Sejas, Grace Jiyoung Yun, Erlei Lin
 
 ## Project Description
 A mini recreation of Twitter using Ethereum and Solidity for the backend and ReactJS for the frontend, with our Smart Contract deployed on the Goerli Testnet.
@@ -94,3 +94,5 @@ In the beginning, the project felt complicated as none of us had experiences wit
 
 ## Conclusion
 Looking back, our team invested more time on doing research and tutorials than coding. We are positive that we all have grasped a deeper understanding on ethereum.
+
+We have a dedicated Readme for the Front End! Check it out at ether-twitter/front-end
