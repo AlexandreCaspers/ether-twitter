@@ -57,6 +57,7 @@ function handleAccountsChanged(accounts) {
    }
  }
 
+ //function for deleting tweets
 const deleteTweet = (id) => {
   if (window.confirm(`You will permanently delete this tweet, are you sure?`)) {
     SMART_CONTRACT.methods.DeleteTweet(id)
@@ -137,8 +138,9 @@ let displayTweets = feedTweets.map( (tweet, index) => {
   />
 })
 
+//reversing the tweets to be most recent first, but this reverse could be activated on a sorting button
 displayTweets = displayTweets.reverse();
-  
+
   return (
     <FeedMainDiv>
       <FeedTitleDiv>
@@ -175,12 +177,13 @@ displayTweets = displayTweets.reverse();
             // set loading animation to button while tweet is being created
             loadingNewMessage = true;
 
+            //create a new tweet by calling smartcontract 
             SMART_CONTRACT.methods
               .PostTweet(values.body, Math.floor(new Date().getTime() / 1000))
               .send({ from: userAccount })
               .then((response) => {
-                populateFeed(setFeedTweets)
-                loadingNewMessage = false; 
+                populateFeed(setFeedTweets);
+                loadingNewMessage = false;
                 actions.resetForm();
                 actions.setSubmitting(false);
               })
@@ -190,7 +193,6 @@ displayTweets = displayTweets.reverse();
           }}
         >
           {(props) => {
-            
             return (
               <Form>
                 <Field name="body">
@@ -226,10 +228,11 @@ displayTweets = displayTweets.reverse();
       </FeedMakeTweetDiv>
       <hr />
 
-     {feedTweets[0] ? <FeedTweetsDiv>
-      {displayTweets}
-     </FeedTweetsDiv>: <Button id="feedLoadingButton" isLoading={true} ></Button>}
-
+      {feedTweets[0] ? (
+        <FeedTweetsDiv>{displayTweets}</FeedTweetsDiv>
+      ) : (
+        <Button id="feedLoadingButton" isLoading={true}></Button>
+      )}
     </FeedMainDiv>
   );
 }
